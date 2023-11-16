@@ -92,12 +92,7 @@ const App = () => {
       autoConnect
     >
      <WalletModalProvider>
-      <div>
-        <p>Test</p>
-        <WalletMultiButton />
-      </div>
-      {/* <WalletMultiButton /> */}
-        {/* <Grid container rowSpacing={{ xs: 8, sm: 9 }} sx={{ width: 1, backgroundColor: '#222c31'}}>
+        <Grid container rowSpacing={{ xs: 8, sm: 9 }} sx={{ width: 1, backgroundColor: '#222c31'}}>
         <Grid item xs={12}>
           <Header balance={balance} account={account}/>
         </Grid>
@@ -111,7 +106,7 @@ const App = () => {
             <Route path="/games/Roulette" element={<RouletteGame balance={balance} account={account} />} />
           </Routes>
           </Grid>
-          </Grid> */}
+          </Grid>
       </WalletModalProvider>
   </WalletProvider>
   );
