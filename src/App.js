@@ -1,6 +1,8 @@
 import './App.css';
-import React, { useEffect } from 'react';
-import { ethers } from 'ethers';
+import RouletteGame from './components/RouletteGame';
+import Wallet from './components/Wallet';
+import Games from './components/Games';
+import React, { useEffect, useMemo } from 'react';
 import { Grid } from '@mui/material';
 import contractsService from './services/contractsService';
 import {useDispatch, useSelector } from "react-redux";
@@ -16,11 +18,28 @@ import {
   Route,
 } from "react-router-dom"
 
-import RouletteGame from './components/RouletteGame';
-import Wallet from './components/Wallet';
-import Games from './components/Games';
+import { WalletProvider } from "@demox-labs/aleo-wallet-adapter-react";
+import { WalletModalProvider } from "@demox-labs/aleo-wallet-adapter-reactui";
+import { LeoWalletAdapter } from "@demox-labs/aleo-wallet-adapter-leo";
+import {
+  DecryptPermission,
+  WalletAdapterNetwork,
+} from "@demox-labs/aleo-wallet-adapter-base";
+import { WalletMultiButton } from "@demox-labs/aleo-wallet-adapter-reactui";
+require("@demox-labs/aleo-wallet-adapter-reactui/styles.css");
+
+
 
 const App = () => {
+
+  const wallets = useMemo(
+    () => [
+      new LeoWalletAdapter({
+        appName: "Leo Demo App",
+      }),
+    ],
+    []
+  );
   const dispatch = useDispatch()
   const balance = useSelector(({ balance }) => {
     return balance;
@@ -35,22 +54,22 @@ const App = () => {
     return price;
   });
 
-  const web3Handler = async () => {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    dispatch(loadAccounts(accounts[0]));
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+  // const web3Handler = async () => {
+  //   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+  //   dispatch(loadAccounts(accounts[0]));
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   const signer = provider.getSigner();
 
-    window.ethereum.on('chainChanged', (chainId) => {
-      window.location.reload();
-    })
+  //   window.ethereum.on('chainChanged', (chainId) => {
+  //     window.location.reload();
+  //   })
 
-    window.ethereum.on('accountsChanged', async function (accounts) {
-      dispatch(loadAccounts(accounts[0]));
-      await web3Handler();
-    })
-    await contractsService.loadContracts(signer);
-  }
+  //   window.ethereum.on('accountsChanged', async function (accounts) {
+  //     dispatch(loadAccounts(accounts[0]));
+  //     await web3Handler();
+  //   })
+  //   await contractsService.loadContracts(signer);
+  // }
 
   const loadInfo = async () => {
     if (account !==""){
@@ -66,21 +85,35 @@ const App = () => {
 
 
   return (
-    <Grid container rowSpacing={{ xs: 8, sm: 9 }} sx={{ width: 1, backgroundColor: '#222c31'}}>
-    <Grid item xs={12}>
-      <Header login={web3Handler} balance={balance} account={account}/>
-    </Grid>
-    <Grid item xs={12}>
-      <Routes>
-        <Route path="/Wallet" element={<Wallet/>} > 
-          <Route path="buyTokens" element={<BuyTokens account={account} price={price} />} />
-          <Route path="withdrawTokens" element={<WithdrawTokens balance={balance} account={account} price={price}/>} />
-        </Route>
-        <Route path="/games" element={<Games/>}/>
-        <Route path="/games/Roulette" element={<RouletteGame balance={balance} account={account} />} />
-      </Routes>
-      </Grid>
-      </Grid>
+    <WalletProvider
+      wallets={wallets}
+      decryptPermission={DecryptPermission.UponRequest}
+      network={WalletAdapterNetwork.Localnet}
+      autoConnect
+    >
+     <WalletModalProvider>
+      <div>
+        <p>Test</p>
+        <WalletMultiButton />
+      </div>
+      {/* <WalletMultiButton /> */}
+        {/* <Grid container rowSpacing={{ xs: 8, sm: 9 }} sx={{ width: 1, backgroundColor: '#222c31'}}>
+        <Grid item xs={12}>
+          <Header balance={balance} account={account}/>
+        </Grid>
+        <Grid item xs={12}>
+          <Routes>
+            <Route path="/Wallet" element={<Wallet/>} > 
+              <Route path="buyTokens" element={<BuyTokens account={account} price={price} />} />
+              <Route path="withdrawTokens" element={<WithdrawTokens balance={balance} account={account} price={price}/>} />
+            </Route>
+            <Route path="/games" element={<Games/>}/>
+            <Route path="/games/Roulette" element={<RouletteGame balance={balance} account={account} />} />
+          </Routes>
+          </Grid>
+          </Grid> */}
+      </WalletModalProvider>
+  </WalletProvider>
   );
 }
 

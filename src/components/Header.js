@@ -20,6 +20,8 @@ import CustomButton from "./CustomButton";
 import casinoToken from "../images/Casino.png";
 import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useNavigate } from "react-router";
+import { WalletMultiButton } from "@demox-labs/aleo-wallet-adapter-reactui";
+require("@demox-labs/aleo-wallet-adapter-reactui/styles.css");
 
 const headersData = [
   {
@@ -88,9 +90,7 @@ export default function Header({ login, account, balance }) {
   const LoginButton = () => {
     if (account === "") {
       return (
-        <Button variant="contained" color="error" onClick={login}>
-          Conect
-        </Button>
+        <WalletMultiButton/>
       );
     } else {
       return (
