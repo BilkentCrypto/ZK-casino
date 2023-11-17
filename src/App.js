@@ -2,7 +2,7 @@ import './App.css';
 import RouletteGame from './components/RouletteGame';
 import Wallet from './components/Wallet';
 import Games from './components/Games';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Grid } from '@mui/material';
 import contractsService from './services/contractsService';
 import {useDispatch, useSelector } from "react-redux";
@@ -18,28 +18,8 @@ import {
   Route,
 } from "react-router-dom"
 
-import { WalletProvider } from "@demox-labs/aleo-wallet-adapter-react";
-import { WalletModalProvider } from "@demox-labs/aleo-wallet-adapter-reactui";
-import { LeoWalletAdapter } from "@demox-labs/aleo-wallet-adapter-leo";
-import {
-  DecryptPermission,
-  WalletAdapterNetwork,
-} from "@demox-labs/aleo-wallet-adapter-base";
-import { WalletMultiButton } from "@demox-labs/aleo-wallet-adapter-reactui";
-require("@demox-labs/aleo-wallet-adapter-reactui/styles.css");
-
-
-
 const App = () => {
 
-  const wallets = useMemo(
-    () => [
-      new LeoWalletAdapter({
-        appName: "Leo Demo App",
-      }),
-    ],
-    []
-  );
   const dispatch = useDispatch()
   const balance = useSelector(({ balance }) => {
     return balance;
@@ -85,13 +65,6 @@ const App = () => {
 
 
   return (
-    <WalletProvider
-      wallets={wallets}
-      decryptPermission={DecryptPermission.UponRequest}
-      network={WalletAdapterNetwork.Localnet}
-      autoConnect
-    >
-     <WalletModalProvider>
         <Grid container rowSpacing={{ xs: 8, sm: 9 }} sx={{ width: 1, backgroundColor: '#222c31'}}>
         <Grid item xs={12}>
           <Header balance={balance} account={account}/>
@@ -107,8 +80,6 @@ const App = () => {
           </Routes>
           </Grid>
           </Grid>
-      </WalletModalProvider>
-  </WalletProvider>
   );
 }
 

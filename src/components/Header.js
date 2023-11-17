@@ -10,8 +10,7 @@ import {
   Grid,
   Avatar,
 } from "@mui/material";
-import { connect } from '@puzzlehq/sdk';
-import { SessionTypes } from '@walletconnect/types';
+import { connect, useAccount } from '@puzzlehq/sdk';
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -22,8 +21,6 @@ import CustomButton from "./CustomButton";
 import casinoToken from "../images/Casino.png";
 import WalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useNavigate } from "react-router";
-import { WalletMultiButton } from "@demox-labs/aleo-wallet-adapter-reactui";
-require("@demox-labs/aleo-wallet-adapter-reactui/styles.css");
 
 
 const headersData = [
@@ -32,31 +29,6 @@ const headersData = [
     href: "/games",
   }
 ];
-
-// export const ConnectPage = () => {
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState();
-
-//   const onClick = async () => {
-//     setLoading(true);
-//     setError(undefined);
-//     try {
-//       const session = await connect();
-//     } catch (e) {
-//       setError(e.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//   return (
-//     <div>
-//       <button onClick={onClick} disabled={loading}>
-//         connect to puzzle
-//       </button>
-//       {error && <p>error connecting: {error}</p>}
-//     </div>
-//   );
-// }
 
 const useStyles = makeStyles()(() => ({
   header: {
@@ -88,8 +60,8 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-export default function Header({ login, account, balance }) {
-  const { header, menuButton, toolbar, drawerContainer } = useStyles();
+export default function Header({ account, balance }) {
+  const { header, menuButton, drawerContainer } = useStyles();
 
   const navigate = useNavigate();
   const [state, setState] = useState({
@@ -118,6 +90,7 @@ export default function Header({ login, account, balance }) {
   
 
   const LoginButton = () => {
+  // const { account } = useAccount();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -132,22 +105,13 @@ export default function Header({ login, account, balance }) {
       setLoading(false);
     }
   };
+  const { account1 } = useAccount();
+  console.log(account1)
     if (account === "") {
-      
       return (
-
-        <button onClick={onClick} disabled={loading}>
+      <button onClick={onClick} disabled={loading}>
         connect to puzzle
       </button>
-        // <WalletMultiButton/>
-      );
-    } else {
-      return (
-        <CustomButton
-          backGround={"#222c31"}
-          text={"#fff"}
-          display={`${account.slice(0, 5)}...`}
-        />
       );
     }
   };

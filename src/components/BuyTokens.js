@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import contractsService from '../services/contractsService';
 import { loadBalance } from "../reducers/balanceReducer";
 import { CustomTextField } from "./customTextField";
-import TotalBNB from "./TotalBNB";
 import CustomButton from "./CustomButton";
 
 const Buy = async(event, tokenAmount, change, price, account, dispatch) => {
@@ -123,15 +122,9 @@ const BuyTokens = ({account, price}) => {
       style:{
         color:'white'
       }
-    }}
-  />
+    }}/>
           </Grid>
-        </Grid>
-      
-        <Grid item xs={12} sx={{ m: 0.25 }}>
-        <TotalBNB tokenAmount={tokenAmount.value} price={price} msg={'Cost :'}/>
-        </Grid>
-        
+        </Grid>  
         <Grid item xs={12} sx={{ m: 0.25 }}>
         <Grid container alignItems="center" justifyContent="center" spacing={2}>
           <Button type="submit" size="large" variant="contained" color="warning">

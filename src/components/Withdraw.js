@@ -6,7 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import contractsService from '../services/contractsService';
 import { loadBalance } from "../reducers/balanceReducer";
-import TotalBNB from "./TotalBNB";
 import SelectAmount from "./SelectAmount";
   
   const Withdraw = async(event, tokenAmount, change, price, account, dispatch) => {
@@ -91,11 +90,6 @@ import SelectAmount from "./SelectAmount";
                 <SelectAmount onChangeValue={tokenAmount.onChange} changeValue={auxChange} TextFielValue={tokenAmount.value} maxValue={balance} buttonColor={'#2e7d32'} />
             </Grid>
           </Grid>
-        
-          <Grid item xs={12} sx={{ m: 0.25 }}>
-          <TotalBNB tokenAmount={tokenAmount.value} price={price} msg={'You will receive'}/>
-          </Grid>
-          
           <Grid item xs={12} sx={{ m: 0.25 }}>
           <Grid container alignItems="center" justifyContent="center" spacing={2}>
             <Button type="submit" size="large" variant="contained" color="warning">
