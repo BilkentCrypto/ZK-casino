@@ -10,6 +10,8 @@ import {
   Grid,
   Avatar,
 } from "@mui/material";
+import { connect } from '@puzzlehq/sdk';
+import { SessionTypes } from '@walletconnect/types';
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -23,12 +25,38 @@ import { useNavigate } from "react-router";
 import { WalletMultiButton } from "@demox-labs/aleo-wallet-adapter-reactui";
 require("@demox-labs/aleo-wallet-adapter-reactui/styles.css");
 
+
 const headersData = [
   {
     label: "Games",
     href: "/games",
   }
 ];
+
+// export const ConnectPage = () => {
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState();
+
+//   const onClick = async () => {
+//     setLoading(true);
+//     setError(undefined);
+//     try {
+//       const session = await connect();
+//     } catch (e) {
+//       setError(e.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+//   return (
+//     <div>
+//       <button onClick={onClick} disabled={loading}>
+//         connect to puzzle
+//       </button>
+//       {error && <p>error connecting: {error}</p>}
+//     </div>
+//   );
+// }
 
 const useStyles = makeStyles()(() => ({
   header: {
@@ -87,10 +115,31 @@ export default function Header({ login, account, balance }) {
     };
   }, []);
 
+  
+
   const LoginButton = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+
+  const onClick = async () => {
+    setLoading(true);
+    setError(undefined);
+    try {
+      const session = await connect();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
     if (account === "") {
+      
       return (
-        <WalletMultiButton/>
+
+        <button onClick={onClick} disabled={loading}>
+        connect to puzzle
+      </button>
+        // <WalletMultiButton/>
       );
     } else {
       return (
