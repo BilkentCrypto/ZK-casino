@@ -3,26 +3,26 @@ pragma solidity ^0.8.4;
 
 interface IERC20 {
 
-    //Devuelve la cantidad de tokens existentes.
+    // Returns the total number of tokens in existence.
     function totalSupply() external view returns (uint256);
 
-    //Devuelve la cantidad de tokens que posee una `account`.
+    // Returns the amount of tokens owned by an `account`.
     function balanceOf(address account) external view returns (uint256);
 
-    /* Realiza una transferencia de tokens a un destinatario.
-    Devuelve un valor booleano que indica si la operacion tuvo exito. 
-    Emite un evento {Transfer}. */
+    /* Performs a token transfer to a recipient.
+    Returns a boolean value indicating whether the operation was successful.
+    Emits a {Transfer} event. */
     function transfer(address from, address to, uint256 amount) external returns (bool);
 
-    /* Se emite cuando se realiza una transferencia de tokens. 
-    Ten en cuenta que `value` puede ser cero. */
+    /* Emitted when a token transfer occurs.
+    Note that `value` may be zero. */
     event Transfer(address indexed from, address indexed to, uint256 value);
 }
 
-// Smart Contract de los tokens ERC20
+// ERC20 Token Smart Contract
 contract ERC20 is IERC20 {
 
-    // Estructuras de datos
+    // Data structures
     mapping(address => uint256) private _balances;
     
     // Variables
@@ -31,55 +31,55 @@ contract ERC20 is IERC20 {
     string private _symbol;
     address public owner;
 
-    modifier onlyOwner(address _direccion) {
-        require(_direccion == owner, "No tienes permisos para ejecutar esta funcion.");
+    modifier onlyOwner(address _address) {
+        require(_address == owner, "You do not have permission to execute this function.");
         _;
     }
 
-    /* Establece el valor del nombre y el simbolo del token. 
-    El valor por defecto de {decimaes} es 18. Para seleccionar un valor diferente para
-    {decimals} debemos remplazarlo. */
+    /* Sets the value of the token name and symbol.
+    The default value of {decimals} is 18. To select a different value for
+    {decimals} it must be replaced. */
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
         owner = msg.sender;
     }
 
-    // Devuelve el nombre del token.
+    // Returns the name of the token.
     function name() public view virtual returns (string memory) {
         return _name;
     }
 
-    // Devuelve el simbolo del token, normalmente una version mas corta del nombre.
+    // Returns the token symbol, usually a shorter version of the name.
     function symbol() public view virtual returns (string memory) {
         return _symbol;
     }
 
-    /* Devuelve el numero de decimales utilizados para obtener su representacion de usuario.
-    Por ejemplo, si `decimals` es igual a `2`, un saldo de `505` tokens deberia
-    mostrarse al usuario como `5.05` (`505 / 10 ** 2`).
-    Los tokens suelen optar por un valor de 18, imitando la relacion entre
-    Ether y Wei. Este es el valor que utiliza {ERC20}, a menos que esta funcion sea
-    sea anulada. */
+    /* Returns the number of decimals used to get its user representation.
+    For example, if `decimals` equals `2`, a balance of `505` tokens should
+    be displayed to the user as `5.05` (`505 / 10 ** 2`).
+    Tokens usually opt for a value of 18, imitating the relationship between
+    Ether and Wei. This is the value used by {ERC20}, unless this function is
+    overridden. */
     function decimals() public view virtual returns (uint8) {
-        return 0;
+        return 18;
     }
 
-    // Ver: {IERC20-totalSupply}.
+    // See: {IERC20-totalSupply}.
     function totalSupply() public view virtual override returns (uint256) {
         return _totalSupply;
     }
 
-    // Ver: {IERC20-balanceOf}.
+    // See: {IERC20-balanceOf}.
     function balanceOf(address account) public view virtual override returns (uint256) {
         return _balances[account];
     }
 
-    /* Ver: {IERC20-transfer}.
-    Requisitos:
-    - `to` no puede ser la direccion cero.
-    - la persona que ejecuta debe tener un saldo de al menos `amount`. */
-    function transfer(address from,address to, uint256 amount) public virtual override returns (bool) {
+    /* See: {IERC20-transfer}.
+    Requirements:
+    - `to` cannot be the zero address.
+    - the caller must have a balance of at least `amount`. */
+    function transfer(address from, address to, uint256 amount) public virtual override returns (bool) {
         _transfer(from, to, amount);
         return true;
     }
@@ -89,13 +89,13 @@ contract ERC20 is IERC20 {
         return true;
     }
 
-    /* Mueve `amount` de tokens del `sender` al `recipient`.
-    Esta funcion interna es equivalente a {transfer}, y puede utilizarse para
-    por ejemplo, implementar fees (tarifas) automaticas de tokens, etc.
-    Emite un evento {Transfer}.
-    Requisitos:
-    - `from` y `to` no pueden ser direcciones cero.
-    - `from` debe tener un saldo de al menos `amount`. */
+    /* Moves `amount` tokens from `sender` to `recipient`.
+    This internal function is equivalent to {transfer}, and can be used to
+    implement features like automatic token fees, etc.
+    Emits a {Transfer} event.
+    Requirements:
+    - `from` and `to` cannot be zero addresses.
+    - `from` must have a balance of at least `amount`. */
     function _transfer(
         address from,
         address to,
@@ -112,12 +112,12 @@ contract ERC20 is IERC20 {
         emit Transfer(from, to, amount);
     }
 
-    /* Crea tokens de `amount` y las asigna a `account`, aumentando
-    el suministro total.
-    Emite un evento {Transfer} con "from" como direccion cero.
-    Requisitos:
-    - `account` no puede ser la direccion cero. */
-    function _mint(address account, uint256 amount) internal virtual{
+    /* Creates `amount` tokens and assigns them to `account`, increasing
+    the total supply.
+    Emits a {Transfer} event with "from" as the zero address.
+    Requirements:
+    - `account` cannot be the zero address. */
+    function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
         _totalSupply += amount;
         _balances[account] += amount;
