@@ -1,51 +1,52 @@
-program basic_casino.aleo {
-    // A token, issued by the casino.
-    // - 'owner'  : The address of the account that owns the record associated with this token.
-    // - 'amount' : The amount of casino tokens owned by the account.
-    record Token {
-        owner: address,
-        amount: u64,
+program roulette.aleo {
+    // Represents a bet placed in the roulette game.
+    // - `number` : The number on which the bet is placed (0-36).
+    // - `amount` : The amount of the bet.
+    struct Bet {
+        number: u8,
+        amount: u32,
     }
 
-    // An on-chain mapping, storing the amount of casino tokens owned by each account.
-    // The account is stored as a hash to preserve user privacy.
-    mapping balances: field => u64;
-
-    // Issues casino tokens to a user.
-    // - `owner` : The address of the account to issue the token to.
-    // - `aleoAmount`: The amount of Aleo tokens received, to be converted to casino tokens.
-    transition issue(owner: address, aleoAmount: u64) -> Token {
-        assert_eq(self.caller, aleo1t0uer3jgtsgmx5tq6x6f9ecu8tr57rzzfnc2dgmcqldceal0ls9qf6st7a); // Replace with your casino owner address
-        let casinoTokenAmount: u64 = aleoAmount * 10; // 1 Aleo Token = 10 Casino Tokens
-
-        return Token {
-            owner: owner,
-            amount: casinoTokenAmount,
-        } then finalize(BHP256::hash_to_field(owner), casinoTokenAmount);
+    // Represents the state of a roulette game.
+    // - `winning_number` : The winning number of the game.
+    struct Game {
+        winning_number: u8,
     }
 
-    // Finalizes the token issuance by updating the on-chain balance.
-    finalize issue(hash: field, amount: u64) {
-        let current_amount: u64 = Mapping::get_or_use(balances, hash, 0u64);
-        Mapping::set(balances, hash, current_amount + amount);
+    // Initializes a new game with a winning number.
+    // - `winning_number` : The winning number for the game.
+    transition new(winning_number: u8) -> Game {
+        return Game {
+            winning_number,
+        };
     }
 
-    // Withdraws casino tokens and converts them back to Aleo tokens.
-    // - `recipient`: The address of the account to withdraw to.
-    // - `casinoTokenAmount`: The amount of casino tokens to withdraw.
-    transition withdraw(recipient: address, casinoTokenAmount: u64) -> Token {
-        assert_eq(self.caller, aleo1t0uer3jgtsgmx5tq6x6f9ecu8tr57rzzfnc2dgmcqldceal0ls9qf6st7a); // Only the casino can process withdrawals
-        let aleoTokenAmount: u64 = casinoTokenAmount / 10; // Convert Casino Tokens back to Aleo Tokens
-
-        return Token {
-            owner: recipient,
-            amount: aleoTokenAmount,
-        } then finalize(BHP256::hash_to_field(recipient), casinoTokenAmount);
+    // Evaluates a bet against the winning number.
+    // Returns `true` if the bet wins, `false` otherwise.
+    // - `bet` : The bet to evaluate.
+    // - `game` : The current game.
+    function evaluate_bet(bet: Bet, game: Game) -> bool {
+        return bet.number == game.winning_number;
     }
 
-    // Finalizes the withdrawal by updating the on-chain balance.
-    finalize withdraw(hash: field, casinoTokenAmount: u64) {
-        let current_amount: u64 = Mapping::get_or_use(balances, hash, 0u64);
-        Mapping::set(balances, hash, current_amount - casinoTokenAmount);
+    // Main function (example usage)
+    function main() {
+        // Initialize a new game with a winning number
+        let game = new(17u8); // Assume 17 is the winning number
+
+        // Player places a bet on a number
+        let player_bet = Bet {
+            number: 17u8, // Player bets on 17
+            amount: 100u32,
+        };
+
+        // Evaluate the bet
+        let is_win = evaluate_bet(player_bet, game);
+
+        // Output the result
+        console.log("Player's Bet: {}", player_bet.number);
+        console.log("Winning Number: {}", game.winning_number);
+        console.log("Win: {}", is_win);
     }
 }
+
