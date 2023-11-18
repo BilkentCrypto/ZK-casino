@@ -60,7 +60,7 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-export default function Header({ account, balance }) {
+export default function Header({ account, balance=1000000 }) {
   const { header, menuButton, drawerContainer } = useStyles();
 
   const navigate = useNavigate();

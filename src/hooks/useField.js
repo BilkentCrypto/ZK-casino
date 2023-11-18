@@ -8,7 +8,7 @@ export const useField = (initial) => {
       if (event.target.value === ""){
         setValue("")
       }else{
-        setValue(parseInt(event.target.value))
+        setValue(event.target.value)
       }
     }
 

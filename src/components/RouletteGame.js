@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import Ruleta from "./Roulette";
 import {  Grid, Button } from "@mui/material";
 import { useField } from "../hooks/useField";
-import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import CustomButton from "./CustomButton";
-import contractsService from '../services/contractsService';
-import { loadBalance } from "../reducers/balanceReducer";
 import SelectAmount from "./SelectAmount";
 
-const RouletteGame = ({balance, account}) => {
-  const dispatch = useDispatch()
+const RouletteGame = ({balance=10000000}) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const betAmount = useField("");
@@ -20,7 +16,6 @@ const RouletteGame = ({balance, account}) => {
 
   const onWheelStop= async()=>{
     setMustSpin(false)
-    await dispatch(loadBalance(account))
     if (lastResult.result === true){
       toast.success(`Congratulations, you have earned ${lastResult.tokensEarned} tokens!!`, {
         position: "top-right",
@@ -48,10 +43,22 @@ const RouletteGame = ({balance, account}) => {
         });
     }else{
     try{
-      const result =await contractsService.playRoulette(start.value, end.value, betAmount.value)
-      setlastResult(result)
-      setPrizeNumber(result.numberWon)
-      setMustSpin(true)
+      const number_won = Math.floor(Math.random() * 13);
+      setPrizeNumber(number_won)
+      if (number_won>7){
+        const result = {
+        numberWon: number_won,
+        result: true,
+        tokensEarned: 2*betAmount.value}
+        setlastResult(result)
+      }else{
+        const result = {
+          numberWon: number_won,
+          result: false,
+          tokensEarned: 2*betAmount.value}
+          setlastResult(result)
+      }
+      setMustSpin(true);
     }catch(error){
       toast.error(`An error has occurred please try again later`, {
         position: "top-right",

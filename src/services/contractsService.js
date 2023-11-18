@@ -9,7 +9,7 @@ import CasinoAddress from "../backend/contractsData/Casino-address.json";
     }
 
     const tokenBalance = async(acc) =>{
-        const balance = await casino.tokenBalance(acc);
+        const balance = 100000000;
         return parseInt(balance._hex);
     }
 
