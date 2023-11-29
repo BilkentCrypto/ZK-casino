@@ -1,2 +1,2 @@
-## ZK-Roulette Project Built for ETHGlobal Istanbul
+## ZK-Roulette Project Built for Aleo zkHackathon
 
